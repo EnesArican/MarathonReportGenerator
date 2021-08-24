@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
 	  
-    <TypeScriptToolsVersion>4.2</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
 	
@@ -37,21 +37,5 @@
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
   </Target>
-
-	<!-- UNCOMMENT FOR PRODUCTION -->
-
-	<!-- <Target Name="PublishRunVueCli" AfterTargets="ComputeFilesToPublish">
-    <Message Importance="high" Text="Running npm build..." />
-    <Exec WorkingDirectory="." Command="npm run build" />
-    <ItemGroup>
-      <DistFiles Include=".\wwwroot\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
-   -->
-
   
 </Project>
