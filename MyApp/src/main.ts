@@ -1,20 +1,19 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import './app.scss';
-import 'es6-shim';
 
 import Vue from 'vue';
-
-import Controls from '@servicestack/vue';
-Vue.use(Controls);
-
 import App from './App.vue';
-
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 import { router } from './shared/router';
+
+Vue.use(Vuetify);
+
+
 
 Vue.config.productionTip = false;
 
 const app = new Vue({
     el: '#app',
+    vuetify: new Vuetify(),
     render: (h) => h(App),
     router,
 });

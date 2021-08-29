@@ -3,23 +3,12 @@ import Router, { Route } from 'vue-router';
 
 import { store, bus } from './index';
 
-import { Forbidden } from '@servicestack/vue';
+
 import Home from '../components/Home/index.vue';
-import About from '../components/About.vue';
-import SignIn from '../components/SignIn.vue';
-import SignUp from '../components/SignUp.vue';
-import Profile from '../components/Profile.vue';
-import Admin from '../components/Admin/index.vue';
-import ReportForm from '../components/ReportForm.vue';
+import ReportForm from '../components/Home/ReportForm.vue';
 
 export enum Routes {
   Home = '/',
-  About = '/about',
-  SignIn = '/signin',
-  SignUp = '/signup',
-  Profile = '/profile',
-  Admin = '/admin',
-  Forbidden = '/forbidden',
   ReportForm = '/report-form',
 }
 
@@ -28,15 +17,9 @@ Vue.use(Router);
 
 
 const routes = [
-  { path: Routes.Home, component: Home, props: { name: 'Vue' } },
-  { path: Routes.About, component: About, props: { message: 'About page' } },
-  { path: Routes.SignIn, component: SignIn },
-  { path: Routes.SignUp, component: SignUp },
-  { path: Routes.Profile, component: Profile },
-  { path: Routes.Admin, component: Admin },
-  { path: Routes.Forbidden, component: Forbidden },
-  { path: Routes.ReportForm, component: ReportForm },
   { path: '*', redirect: '/' },
+  { path: Routes.ReportForm, component: ReportForm },
+  { path: Routes.Home, component: Home, props: { name: 'Vue' } },
 ];
 
 export const router = new Router ({

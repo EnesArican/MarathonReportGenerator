@@ -1,25 +1,22 @@
 ﻿<template>
-<div>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <router-link class="navbar-brand" to="/" exact>
-                <i class="svg-logo svg-lg mr-1"></i>
-                <span class="align-middle">MyApp</span>
-            </router-link>
-            <navbar :items="store.nav.results" :attributes="store.userAttributes" />
-        </div>
-    </nav>
-
-    <div id="content" class="container mt-4">
-      <router-view></router-view>
-    </div>
-</div>
+    <v-app>
+        <v-app-bar dense app>
+            <i class="svg-logo svg-lg mr-1"></i>
+            <v-app-bar-nav-icon> </v-app-bar-nav-icon>
+            <v-app-bar-title>Marathon Report Generator</v-app-bar-title>
+        </v-app-bar>
+        <v-main>
+            <div id="content" class="container mt-4">
+                <router-view></router-view>
+            </div>
+        </v-main>
+    </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
 import { bus, store } from './shared';
+import { Component, Prop } from 'vue-property-decorator';
 
 @Component
 export class App extends Vue {
