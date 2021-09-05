@@ -2,6 +2,9 @@
     <v-row  justify="center">
         <v-col cols="7" sm="9">
             <h3>Report Generator</h3>
+            <div v-if="loading" class="loading">
+                Loading...
+            </div>
 
             <v-form @submit.prevent="submit">
                 <v-container>
@@ -40,7 +43,15 @@ export class ReportForm extends Vue {
     responseStatus = null;
     items = ['Class Register', 'Behaviour', 'Other'];
 
-    async submit() {
+    created()
+    {
+         // tslint:disable-next-line:no-console
+        console.log('inside created method');
+        this.loading = true;
+    }
+
+
+    async fetch() {
         try {
             this.loading = true;
             this.responseStatus = null;
@@ -63,6 +74,8 @@ export class ReportForm extends Vue {
             this.loading = false;
         }
     }
+
+
 
     newUser(email: string) {
         const names = email.split('@');

@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-	  
-    <TypeScriptToolsVersion>4.2</TypeScriptToolsVersion>
+	<RootNamespace>MyApp</RootNamespace>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<SpaRoot>ClientApp/</SpaRoot>
+		<DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules/**</DefaultItemExcludes>
+	</PropertyGroup>
 	
   <Target Name="Bundle" BeforeTargets="BeforePublish">
-    <Exec Command="npm install --also=dev" />
-    <Exec Command="npm run-script build" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install --also=dev" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run-script build" />
   </Target>
-	
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 	
   <ItemGroup>
     <Content Update="electron.manifest.json">
@@ -22,20 +23,43 @@
   </ItemGroup>
 	
   <ItemGroup>
+	<PackageReference Include="VueCliMiddleware" Version="5.0.0" />
     <PackageReference Include="ElectronNET.API" Version="13.5.1" />
     <PackageReference Include="ServiceStack" Version="5.*" />
+	<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\MyApp.ServiceModel\MyApp.ServiceModel.csproj" />
-    <ProjectReference Include="..\MyApp.ServiceInterface\MyApp.ServiceInterface.csproj" />
-  </ItemGroup>
-	
-  <Target Name="OnFirstUse" BeforeTargets="Build" Condition=" !Exists('wwwroot\dist') ">
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-  </Target>
+
+	<ItemGroup>
+		<!-- Don't publish the SPA source files, but do show them in the project files list -->
+		<Content Remove="$(SpaRoot)**" />
+		<None Remove="$(SpaRoot)**" />
+		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+	</ItemGroup>
+
+	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+		<!-- Ensure Node.js is installed -->
+		<Exec Command="node --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+		<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+	</Target>
+
+	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+		<!-- Include the newly-built files in the publish output -->
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)dist\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+  
   
 </Project>

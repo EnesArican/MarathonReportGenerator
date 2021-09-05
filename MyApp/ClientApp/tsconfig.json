@@ -40,6 +40,6 @@
   "exclude": [
     "bin",
     "node_modules",
-    "wwwroot"
+    "dist"
   ]
 }

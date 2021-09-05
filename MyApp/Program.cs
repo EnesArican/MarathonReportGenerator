@@ -1,11 +1,7 @@
-﻿using System;
+﻿using ServiceStack;
 using ElectronNET.API;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ServiceStack;
 
 namespace MyApp
 {
@@ -21,7 +17,7 @@ namespace MyApp
                 .ConfigureWebHostDefaults(builder =>
                 {
                     builder.UseElectron(args);
-                    builder.UseModularStartup<Startup>();
+                    builder.UseStartup<Startup>();
                 });
     }
 }

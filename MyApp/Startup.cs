@@ -1,66 +1,67 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using ElectronNET.API;
+using VueCliMiddleware;
+using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Funq;
-using ServiceStack;
-using ServiceStack.Configuration;
-using MyApp.ServiceInterface;
-using ServiceStack.Script;
-using ServiceStack.Web;
-using System;
-using ServiceStack.Text;
-using ServiceStack.Logging;
-using System.Threading.Tasks;
-using ElectronNET.API;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MyApp
 {
-    public class Startup : ModularStartup
+    //public class Startup : ModularStartup
+    //{
+
+    public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public new void ConfigureServices(IServiceCollection services)
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers();
+            
+            services.AddSpaStaticFiles(configuration =>
+                configuration.RootPath = "ClientApp/dist");
+
+            services.AddSwaggerGen(c =>
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApp", Version = "v1" }));
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyApp V1"));
             }
 
-            app.UseServiceStack(new AppHost
+            
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseStaticFiles();
+
+            if (!env.IsDevelopment()) app.UseSpaStaticFiles();
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+
+            app.UseSpa(spa =>
             {
-                AppSettings = new NetCoreAppSettings(Configuration)
+                spa.Options.SourcePath = "ClientApp/";
+
+                if (env.IsDevelopment()) spa.UseVueCli(npmScript: "serve");
+              
             });
+
 
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
-        }
-    }
-
-    public class AppHost : AppHostBase
-    {
-        public AppHost() : base("MyApp", typeof(MyServices).Assembly) { }
-
-        // Configure your AppHost with the necessary configuration and dependencies your App needs
-        public override void Configure(Container container)
-        {
-            // enable server-side rendering, see: https://sharpscript.net/docs/sharp-pages
-            Plugins.Add(new SharpPagesFeature {
-                EnableSpaFallback = true
-            }); 
-
-            SetConfig(new HostConfig
-            {
-                AddRedirectParamsToQueryString = true,
-                DebugMode = AppSettings.Get(nameof(HostConfig.DebugMode), HostingEnvironment.IsDevelopment()),
-            });
         }
     }
 }

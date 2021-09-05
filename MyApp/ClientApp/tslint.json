@@ -7,7 +7,7 @@
     "exclude": [
       "gulpfile.js",
       "bin/**",
-      "wwwroot/**",
+      "dist/**",
       "config/**/*.js",
       "node_modules/**"
     ]
