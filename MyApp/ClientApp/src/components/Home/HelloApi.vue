@@ -8,8 +8,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { client } from '../../shared';
-import { Hello } from '../../shared/dtos';
 
 @Component
 export class HelloApi extends Vue {
@@ -27,12 +25,8 @@ export class HelloApi extends Vue {
     }
 
     public async nameChanged(name: string) {
-        if (name) {
-            const r = await client.get(new Hello({ name }));
-            this.result = r.result;
-        } else {
-            this.result = '';
-        }
+        console.log(name);
+        this.txtName = name;
     }
 }
 export default HelloApi;

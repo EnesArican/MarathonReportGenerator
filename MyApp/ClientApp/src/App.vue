@@ -15,12 +15,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { bus, store } from './shared';
 import { Component, Prop } from 'vue-property-decorator';
 
 @Component
 export class App extends Vue {
-  get store() { return store; }
-}
+    }
+
 export default App;
 </script>

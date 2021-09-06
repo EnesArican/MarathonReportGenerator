@@ -1,9 +1,5 @@
 import Vue from 'vue';
 import Router, { Route } from 'vue-router';
-
-import { store, bus } from './index';
-
-
 import Home from '../components/Home/index.vue';
 import ReportForm from '../components/Home/ReportForm.vue';
 
@@ -37,9 +33,3 @@ export const redirect = (path: string) => {
   }
 };
 
-bus.$on('signout', async () => {
-  // reload current page after and run route guards after signing out.
-  const to = router.currentRoute;
-  router.replace('/');
-  router.replace(to.fullPath);
-});
